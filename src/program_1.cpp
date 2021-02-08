@@ -1,19 +1,8 @@
 /*
- * This file is in the public domain.
+ * Modified from libarchives/examples.
  *
- * Feel free to use it as you wish.
  */
 
-/*
- * This example program reads an archive from stdin (which can be in
- * any format recognized by libarchive) and writes certain entries to
- * an uncompressed ustar archive on stdout.  This is a template for
- * many kinds of archive manipulation: converting formats, resetting
- * ownership, inserting entries, removing entries, etc.
- *
- * To compile:
- * gcc -Wall -o tarfilter tarfilter.c -larchive -lz -lbz2
- */
 
 #include <sys/stat.h>
 #include <archive.h>
@@ -21,15 +10,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 
-static void
-die(char *fmt, ...)
+void die(std::string fmt)
 {
-	va_list ap;
-
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	va_end(ap);
+	fprintf(stderr, fmt.c_str());
 	fprintf(stderr, "\n");
 	exit(1);
 }
@@ -70,22 +55,6 @@ main(int argc, char **argv)
 	/* Examine each entry in the input archive. */
 	while ((r = archive_read_next_header(ina, &entry)) == ARCHIVE_OK) {
 		fprintf(stderr, "%s: ", archive_entry_pathname(entry));
-
-		/* Skip anything that isn't a regular file. */
-		if (!S_ISREG(archive_entry_mode(entry))) {
-			fprintf(stderr, "skipped\n");
-			continue;
-		}
-
-		/* Make everything owned by root/wheel. */
-		archive_entry_set_uid(entry, 0);
-		archive_entry_set_uname(entry, "root");
-		archive_entry_set_gid(entry, 0);
-		archive_entry_set_gname(entry, "wheel");
-
-		/* Make everything permission 0744, strip SUID, etc. */
-		m = archive_entry_mode(entry);
-		archive_entry_set_mode(entry, (m & ~07777) | 0744);
 
 		/* Copy input entries to output archive. */
 		if (archive_write_header(outa, entry) != ARCHIVE_OK)
