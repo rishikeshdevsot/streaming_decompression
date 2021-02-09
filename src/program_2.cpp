@@ -17,17 +17,11 @@ void die(std::string fmt)
 int main(){
     struct archive *a;
     struct archive_entry *entry;
-    struct archive_entry *ae;
     int r;
 
     a = archive_read_new();
-    if(a == NULL){
-    	die("Couldn't create archive reader\n");
-    }	    
-    if(archive_read_support_filter_all(a) != ARCHIVE_OK)
-	    die("Couldn't enable decompression\n");
-    if(archive_read_support_format_all(a) != ARCHIVE_OK)
-	    die("Couldn't enable read formats\n");
+    archive_read_support_filter_all(a);
+    archive_read_support_format_all(a);
 
     // Read from stdin	    	    
     r = archive_read_open_fd(a, 0, 10240);
