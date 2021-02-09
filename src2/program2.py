@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import tarfile
 import io
 import sys
