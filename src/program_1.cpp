@@ -22,7 +22,7 @@ void die(std::string fmt)
 int
 main(int argc, char **argv)
 {
-	char buff[8192];
+	char buff[256];
 	ssize_t len;
 	int r;
 	mode_t m;
