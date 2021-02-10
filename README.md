@@ -43,7 +43,7 @@ The main parameter that allowed for optimization is the size of the character bu
 
 ### Previous Implementations
 #### Blocking Implementation
-The initial implementation was performed by reading from the `stdin` using `std::cin` with `getlines()`. Storing this input into a character buffer and passing it to `archive_read_open_memory()` function. This method was functional but time consuming. The input stream was blocked until entirely read and only then did decompression start. Upon realizing that `stdin` and `stdout` can be represented with fd 0 and fd 1. I switched the implementation to use `archive_read_open_fd()` which allowed streaming reads and writes giving better performance. The code structure was also neater when using this function
+The initial implementation was performed by reading from the `stdin` using `std::cin` with `getlines()`. Storing this input into a character buffer and passing it to `archive_read_open_memory()` function. This method was functional but time consuming. The input stream was blocked until entirely read and only then did decompression start. Upon realizing that `stdin` and `stdout` can be represented with fd 0 and fd 1, I switched the implementation to use `archive_read_open_fd()` which allowed streaming reads and writes giving better performance. The code structure was also neater when using this function
 
 #### Multi-threaded implementation
 This is a failed attempt at multi-threading "the decompression + writing to `stdout` process" using OpenMP. In this implementation, threads start performing reads and writes to different archive entries in parallel. The pathnames of the entries which were already processed were added to a vector `addedEntries` which is checked before a new entry is processed to avoid conflicts. The implementation was working for an archive with few entries but upon testing it with the sparse directory benchmark, several races/conflicts were discovered and adding the synchornization primitives was time consuming and made the code very complex. Also for sparse entries as the program processed more entries the vector `addedEntries` kept getting larger. So before processing an entry an `O(n)` string comparison operation takes place. When combined with the overarching loop which iterates over all the archives, the algorithm becomes `O(n^2)` thereby overshadowing the benefits of multithreading. Due to these reasons, this implementation was given up on.
@@ -70,7 +70,7 @@ The architecture is similar to the C++ implementation. In this case the `tarfile
 5. No input/invalid input to program_1: Returns tar.ReadError and exits
 6. Archives with different formats(zip, tar, etc): tarfile module supports gzip, bz2 and lzma ([link](https://docs.python.org/3/library/tarfile.html))
 #### Verification
-Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same. Only skipped sym files were the difference
+Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same. Only skipped sym files was the difference
 
 #### Optimization
 Since, only tarfile member functions were used to directly perform the streaming decompression there are no optimization parametes
