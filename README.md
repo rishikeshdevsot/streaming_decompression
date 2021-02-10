@@ -59,7 +59,7 @@ libarchive also doesn't seem to support random access so starting threading at d
 2. `cat <archive-location>.tar.gz | ./program1.py | ./program2.py`
 
 ### Architecture
-The architecture is similar to the C++ implementation. In this case the `tarfile.open()` function is used to open a stream to `stdin` (called input_tar) and `stdout` (called output_tar) in program1. Program1 iterates over all the members of the archive, extracts each file and sends it to the output stream. The symlinks(both hard and soft) are skipped, the details are provied in the testing section. 
+The architecture is similar to the C++ implementation. In this case the `tarfile.open()` function is used to open a stream to `stdin` (called input_tar) and `stdout` (called output_tar) in program1. Program1 iterates over all the members of the archive, extracts each file and sends it to the output stream. Program2 reads from the output stream and writes the uncompressed files onto the disk. (Symlinks(both hard and soft) are skipped, the details are provied in the testing section) 
 
 ### Testing
 #### Edge cases : result
