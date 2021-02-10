@@ -31,7 +31,7 @@ program_1 creates a struct archive object `ina` which access the `stdin` stream 
 5. No input/invalid input to program_1: program_1 would detect this, give error `Couldn't open archive fd to stdin` and kill itself, program_2 follows suit
 6. Archives with different formats(zip, tar, etc): libarchive supports many compression formats: [found here](https://www.freebsd.org/cgi/man.cgi?query=archive_read_support_format_all&apropos=0&sektion=3&manpath=FreeBSD+12.2-RELEASE+and+Ports&arch=default&format=html )
 #### Verification
-Verification was perfomed using the `diff -ur <dir1> <dir2>` which recursively compares whether two directories and their corresponding files are the same.
+Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same.
 
 ### Optimization
 #### Benchmarks used
@@ -65,17 +65,17 @@ The architecture is similar to the C++ implementation. In this case the `tarfile
 #### Edge cases : result
 1. Empty archives : extracts to an empty folder
 2. Archives with archives: Keeps the inner arhives i.e. doesn't perform recursive decompression
-3. Archives with symlinks: tarfile doesn't support providing a fileobject to a symlink got from an input stream based on it's source code.( [Search for the term "cannot extract (sym)link as file object](https://duplicity.readthedocs.io/en/latest/_modules/tarfile.html) and the workaround is to read from the location being pointed to. And python in general seems to provide limited support for symlink extraction from tarfiles, based on these links([Issue page](https://bugs.python.org/issue35483) [Stackoverflow post](https://stackoverflow.com/questions/10060069/safely-extract-zip-or-tar-using-python)) python seems to follow the path of the symlink to extract them which goes against the rule that program1 cannot perform disk IO access. So for now all symlinks(both hard and soft) are skipped. 
+3. Archives with symlinks: tarfile cannot provide a fileobject to a symlink in an input stream based on looking at the source code.( [Search for the term "cannot extract (sym)link as file object](https://duplicity.readthedocs.io/en/latest/_modules/tarfile.html) and the workaround is to read from the location being pointed to. And python in general seems to provide limited support for symlink extraction from tarfiles, based on these links([Issue page](https://bugs.python.org/issue35483) [Stackoverflow post](https://stackoverflow.com/questions/10060069/safely-extract-zip-or-tar-using-python)). python seems to follow the path of the symlink to extract them which goes against the rule that program1 cannot perform disk IO access. So for now all symlinks(both hard and soft) are skipped. 
 4. Archives with named pipes/fifos: Extracts the fifo without problems
 5. No input/invalid input to program_1: Returns tar.ReadError and exits
-6. Archives with different formats(zip, tar, etc): tarfile supports gzip, bz2 and lzma ([link](https://docs.python.org/3/library/tarfile.html))
+6. Archives with different formats(zip, tar, etc): tarfile module supports gzip, bz2 and lzma ([link](https://docs.python.org/3/library/tarfile.html))
 #### Verification
-Verification was perfomed using the `diff -ur <dir1> <dir2>` which recursively compares whether two directories and their corresponding files are the same.
+Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same.
 
 #### Optimization
-Since, only tarfile member functions were used to directly to perform the streaming decompression there are no optimizaion parametes
+Since, only tarfile member functions were used to directly perform the streaming decompression there are no optimization parametes
 
-#### Previous Attempts
-1. *Python3*: Initially I was writing the programs in python3, python3 had encoding issues when trying to read from the stdin stream. There are characters part of the `.tar.gz` format that cannot be represented with the `utf-8` encoding. Even after specifying the right encoding in the `open()` call, the `read()` operation still gave the errors. There were workarounds available but they required installing external modules. So upon switching to python2, the issue was resolved.
+#### Other Attempts
+1. *Python3*: Initially I was writing the programs in python3, python3 had encoding issues when trying to read from the `stdin` stream. There are characters part of the `.tar.gz` format that cannot be represented with the `utf-8` encoding. Even after specifying the right encoding in the `open()` call, the `read()` operation still gave the errors. There were workarounds available but they required installing external modules. So upon switching to python2, the issue was resolved.
 2. *gzip*: Used the gzip module instead of the tarfile module. It had only one function to decompress called `decompress()` and it accepted a `bytes` object containing the uncompressed data. This module didn't allow streaming so switched over to the tarfile module.
 3. *shutil*: This was an external module that supported decompressing a larger range of archive types. But the `unpack_archive()` function only accepted full path names and not file object which is required for streaming.
