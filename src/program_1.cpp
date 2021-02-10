@@ -1,5 +1,5 @@
 /*
- * Modified from libarchives/examples.
+ * Some parts taken from libarchives/examples.
  *
  */
 
@@ -30,7 +30,7 @@ main(int argc, char **argv)
 	struct archive *outa;
 	struct archive_entry *entry;
 
-	/* Read an archive from stdin, with automatic format detection. */
+	// To Read an archive from stdin, with automatic format detection.
 	ina = archive_read_new();
 	archive_read_support_filter_all(ina);
 	archive_read_support_format_all(ina);
@@ -38,7 +38,7 @@ main(int argc, char **argv)
 	if(r != ARCHIVE_OK)
 		die("Couldn't open archive fd to stdin\n");
 
-	/* Write an uncompressed ustar archive to stdout. */
+	// To write an uncompressed ustar archive to stdout.
 	outa = archive_write_new();
 	archive_write_set_compression_none(outa);
 	archive_write_set_format_ustar(outa);
@@ -46,13 +46,15 @@ main(int argc, char **argv)
 	if(r != ARCHIVE_OK)
 		die("Couldn't open fd to stdout\n");
 
-	/* Examine each entry in the input archive. */
+	// Examine each entry in the input archive.
 	while ((r = archive_read_next_header(ina, &entry)) == ARCHIVE_OK) {
 		fprintf(stderr, "%s: ", archive_entry_pathname(entry));
 
-		/* Copy input entries to output archive. */
+		// Copy input entries to stdout
 		if (archive_write_header(outa, entry) != ARCHIVE_OK)
 			die("Error writing output archive");
+
+		// If entry valid, extract and write to stdout until end of entry
 		if (archive_entry_size(entry) > 0) {
 			len = archive_read_data(ina, buff, sizeof(buff));
 			while (len > 0) {

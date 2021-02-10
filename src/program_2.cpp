@@ -19,14 +19,18 @@ int main(){
     struct archive_entry *entry;
     int r;
 
+    // Setup reader with only uncompressed filter
+    // Confirms that the stdin input is uncompressed
     a = archive_read_new();
-    archive_read_support_filter_all(a);
+    archive_read_support_filter_none(a);
     archive_read_support_format_all(a);
 
     // Read from stdin	    	    
     r = archive_read_open_fd(a, 0, 10240);
+    // Invalid input or no input
     if(r != ARCHIVE_OK)
 	   die("Couldn't open input archive\n"); 
+    // Write all files to disk
     while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
   	if(archive_read_extract(a, entry, ARCHIVE_EXTRACT_TIME) != ARCHIVE_OK)
 		die("Couldn't extract to diski\n");
