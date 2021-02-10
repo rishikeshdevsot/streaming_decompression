@@ -73,7 +73,7 @@ The architecture is similar to the C++ implementation. In this case the `tarfile
 Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same. Only skipped sym files was the difference
 
 #### Optimization
-Since, only tarfile member functions were used to directly perform the streaming decompression there are no optimization parametes
+Since, only tarfile member functions were used to directly perform the streaming decompression, there are no optimization parametes
 
 #### Other Attempts
 1. *Python3*: Initially I was writing the programs in python3, python3 had encoding issues when trying to read from the `stdin` stream. There are characters part of the `.tar.gz` format that cannot be represented with the `utf-8` encoding. Even after specifying the right encoding in the `open()` call, the `read()` operation still gave the errors. There were workarounds available but they required installing external modules. So upon switching to python2, the issue was resolved.
