@@ -70,7 +70,7 @@ The architecture is similar to the C++ implementation. In this case the `tarfile
 5. No input/invalid input to program_1: Returns tar.ReadError and exits
 6. Archives with different formats(zip, tar, etc): tarfile module supports gzip, bz2 and lzma ([link](https://docs.python.org/3/library/tarfile.html))
 #### Verification
-Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same.
+Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same. Only skipped sym files were the difference
 
 #### Optimization
 Since, only tarfile member functions were used to directly perform the streaming decompression there are no optimization parametes
