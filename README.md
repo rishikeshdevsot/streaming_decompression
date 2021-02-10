@@ -23,7 +23,7 @@ will output binaries `program_1` and `program_2`
 program_1 creates a struct archive object `ina` which access the `stdin` stream using the `archive_read_open_fd()` function by passing in 0(fd for stdin is 0) as the fd. Another archive object `outa` accesses the `stdout` stream by passing in `fd = 1`. The ina reads each archive entry in 256 byte chunks using the `archive_read_data()` function and outa writes this data in uncompressed form to `stdout`. program_2 then reads this uncompressed data and writes to disk using the `archive_read_extract()` function. 
 
 ### Testing
-#### Edge cases
+#### Edge cases : result
 1. Empty archives : extracts to an empty folder
 2. Archives with archives: Keeps the inner arhives i.e. doesn't perform recursive decompression
 3. Archives with symlinks: Extracts the symlinks which still contain the same data(for both hard and soft links)
