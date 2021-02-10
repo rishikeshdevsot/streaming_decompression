@@ -31,7 +31,7 @@ program_1 creates a struct archive object `ina` which access the `stdin` stream 
 5. No input/invalid input to program_1: program_1 would detect this, give error `Couldn't open archive fd to stdin` and kill itself, program_2 follows suit
 6. Archives with different formats(zip, tar, etc): libarchive supports many compression formats: [found here](https://www.freebsd.org/cgi/man.cgi?query=archive_read_support_format_all&apropos=0&sektion=3&manpath=FreeBSD+12.2-RELEASE+and+Ports&arch=default&format=html )
 #### Verification
-Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same.
+Verification was perfomed using the `diff -ur <dir1> <dir2>` bash command which recursively compares whether two directories and their corresponding files are the same. The original directory that was compressed and the directory extracted using program1 and program2 are compared using this command.
 
 ### Optimization
 #### Benchmarks used
