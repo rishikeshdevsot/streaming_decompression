@@ -1,4 +1,4 @@
-# sample_compression
+# streaming_decompression
 
 ## Versions
 1. Version1: Using C++
