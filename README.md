@@ -1,4 +1,5 @@
-# streaming_decompression
+# Streaming Decompression
+Decompressing archives without disk I/O reads using standard input
 
 ## Versions
 1. Version1: Using C++
